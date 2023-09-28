@@ -148,17 +148,11 @@ ul {
 }
 
 .card-selected {
-    text-align: center;
-    border: 1px solid #e1e1e1;
-    background: white;
     border-color: blue;
     border-width: 2px;
 }
 
 .card-brother {
-    text-align: center;
-    border: 1px solid #e1e1e1;
-    background: white;
     border-color: green;
     border-width: 6px;
 }
@@ -185,15 +179,20 @@ ul {
     font-weight: 700;
     font-size: 22px;
 }
-.info-card .precioNuevo {
-    font-weight: 700;
-    font-size: 22px;
-}
-.info-card .precioViejo{
+
+.info-card .precio .precioViejo {
     text-decoration: line-through;
-    font-weight: 700;
-    font-size: 16px;
+    font-weight: 500;
+    font-size: 18px;
 }
+
+.cartel-descuento{
+    background-color: red;
+    color: white;
+    font-size: 29px;
+}
+
+
 
 .footer {
     margin-top: 40px;

@@ -4,6 +4,7 @@ const listaCursos = document.querySelector('#lista-cursos');
 const contenedorCarrito = document.querySelector('#lista-carrito tbody');
 const vaciarCarritoBtn = document.querySelector('#vaciar-carrito'); 
 let articulosCarrito = [];
+const cardCursos = document.querySelectorAll(".card");
 
 // Listeners
 cargarEventListeners();
@@ -34,7 +35,7 @@ function agregarCurso(e) {
      // Delegation para agregar-carrito
      if(e.target.classList.contains('agregar-carrito')) {
           const curso = e.target.parentElement.parentElement;
-          curso.parentElement.querySelector(".card").setAttribute('class',"card-selected");
+          curso.parentElement.querySelector(".card").classList.add("card-selected");
           //e.target.parentElement.parentElement.class = "card-selected";
           // Enviamos el curso seleccionado para tomar sus datos
           leerDatosCurso(curso);
@@ -53,7 +54,7 @@ function leerDatosCurso(curso) {
           cantidad: 1
      }
      
-     marcaCursosAutor(infoCurso);
+     //if(!articulosCarrito.some( (e) => e.id === infoCurso.id ) ) marcaCursosMismoAutor(infoCurso);
 
      if( articulosCarrito.some( curso => curso.id === infoCurso.id ) ) { 
           const cursos = articulosCarrito.map( curso => {
@@ -69,6 +70,7 @@ function leerDatosCurso(curso) {
           articulosCarrito = [...cursos];
      }  else {
           articulosCarrito = [...articulosCarrito, infoCurso];
+          marcaCursosMismoAutor(infoCurso);
      }
 
      //console.log(articulosCarrito)
@@ -86,9 +88,31 @@ function eliminarCurso(e) {
           // e.target.parentElement.parentElement.remove();
           const curso = e.target.parentElement.parentElement;
           const cursoId = curso.querySelector('a').getAttribute('data-id');
-          
+          let tarjetaCursoEliminado;
+
           // Eliminar del arreglo del carrito
           articulosCarrito = articulosCarrito.filter(curso => curso.id !== cursoId);
+
+          //Desmarcamos el borde azul del curso eliminado
+          cardCursos.forEach ( e => {
+               if(cursoId === e.querySelector('a').getAttribute('data-id') ){
+                    e.classList.remove('card-selected');   
+                    tarjetaCursoEliminado = e;                
+               }
+               return e;
+          })
+
+          //Desmarcamos los hermanos
+
+          cardCursos.forEach ( e => {
+               if(e.querySelector('p').textContent === tarjetaCursoEliminado.querySelector('p').textContent){
+                    e.classList.remove('card-brother');
+                    if(e.querySelector('#descuento') != null) e.querySelector('#descuento').remove();    
+                    if(e.querySelector('#nuevoPrecio') != null) e.querySelector('#nuevoPrecio').remove();                
+               }
+               return e;
+          })
+
 
           carritoHTML();
      }
@@ -123,30 +147,43 @@ function carritoHTML() {
 }
 
 //Marca los cursos del mismo autor y rebaja el precio
-function marcaCursosAutor(curso){
-     let cardCursos = document.querySelectorAll(".card");
-     console.log(cardCursos);
+function marcaCursosMismoAutor(curso){
 
      cardCursos.forEach ( e => {
-          if(e.querySelector("p").textContent === curso.autor){
-               e.setAttribute('class',"card-brother");
+          if(e.querySelector("p").textContent === curso.autor && curso.id != e.querySelector('a').getAttribute('data-id') ){
+               e.classList.add("card-brother");
                BajaPrecioCurso(e, 5);
           }
           return e;
      })
-
-     
 }
 
 function BajaPrecioCurso(curso, rebaja){
      let precio = curso.querySelector('.precio span');
-     let nuevoPrecio = document.createElement("p");
+     let nuevoPrecio = document.createElement("span");
+     nuevoPrecio.id = 'nuevoPrecio';
+     nuevoPrecio.textContent =  parseInt(precio.textContent.slice(1,precio.textContent.lenght),10) - rebaja;
+     nuevoPrecio.textContent = "$" + nuevoPrecio.textContent;
      
-     nuevoPrecio.textContent = parseInt(precio.textContent.slice(1,precio.textContent.lenght),10) - rebaja;
-     console.log(curso.querySelector('span'));
-     precio.setAttribute('class','precioViejo');
-     nuevoPrecio.setAttribute('class','precioNuevo');
-     curso.querySelector('span').appendChild(nuevoPrecio);
+     precio.classList.add('precioViejo');
+     nuevoPrecio.classList.add('u-pull-right');
+     curso.querySelector('span').insertAdjacentElement('beforeend',nuevoPrecio);
+     //if(curso.querySelector('#descuento') == null) AniadeCartelDescuento(curso.querySelector('a').getAttribute('data-id'));
+     AniadeCartelDescuento(curso.querySelector('a').getAttribute('data-id'));
+}
+
+function AniadeCartelDescuento(cursoId){
+     let cartel = document.createElement('span');
+     cartel.classList.add('cartel-descuento');
+     cartel.textContent = '!DESCUENTO¡';
+     cartel.id = 'descuento';
+     cardCursos.forEach ( e => {
+          if( cursoId == e.querySelector('a').getAttribute('data-id')){
+               e.querySelector('p');
+               e.insertAdjacentElement('beforeend', cartel);
+          }
+          return e;
+     })
 }
 
 // NUEVO: 
