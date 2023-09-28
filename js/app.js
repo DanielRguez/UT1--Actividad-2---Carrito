@@ -144,8 +144,10 @@ function BajaPrecioCurso(curso, rebaja){
      
      nuevoPrecio.textContent = parseInt(precio.textContent.slice(1,precio.textContent.lenght),10) - rebaja;
      console.log(curso.querySelector('span'));
-     precio.setAttribute('class','precioViejo');
-     nuevoPrecio.setAttribute('class','precioNuevo');
+     //precio.setAttribute('class','precioViejo');
+     //nuevoPrecio.setAttribute('class','precioNuevo');
+     precio.classList.add('precioViejo');
+     nuevoPrecio.classList.add('precioNuevo');
      curso.querySelector('span').appendChild(nuevoPrecio);
 }
 
