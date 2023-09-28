@@ -44,6 +44,8 @@ function agregarCurso(e) {
 
 // Lee los datos del curso
 function leerDatosCurso(curso) {
+
+
      //console.log(curso.querySelector('.precio span').textContent);
      const infoCurso = {
           imagen: curso.querySelector('img').src,
@@ -78,6 +80,7 @@ function leerDatosCurso(curso) {
      
 
      // console.log(articulosCarrito)
+     aniadeCompraCesta();
      carritoHTML();
 }
 
@@ -116,6 +119,31 @@ function eliminarCurso(e) {
 
           carritoHTML();
      }
+}
+
+function aniadeCompraCesta(){
+     if(document.querySelector('#compra-carrito') != null){
+          let botonCompraCesta = document.createElement("a");
+          botonCompraCesta.setAttribute("class","button u-full-width");
+          botonCompraCesta.id= 'compra-carrito';
+          botonCompraCesta.href ='#';
+          botonCompraCesta.textContent = 'Comprar cesta';
+          botonCompraCesta.addEventListener('click', compraCesta);
+          carrito.insertAdjacentElement('beforeend', botonCompraCesta);
+     }
+     
+
+}
+
+function compraCesta(){
+     console.log(articulosCarrito);
+     cardCursos.forEach ( e => {
+          if( !articulosCarrito.some( articulo =>  e.querySelector('a').getAttribute('data-id') === articulo.id) ){
+               //Este curso no está dentro de los cursos del carrito, debemos eliminarlo
+               e.remove();
+          }
+          return e;
+     })
 }
 
 
